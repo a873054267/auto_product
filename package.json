@@ -2,6 +2,9 @@
   "name": "auto_product",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "dev:api": "tsx backend/server.ts",

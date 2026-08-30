@@ -1,7 +1,7 @@
 import Database from "better-sqlite3";
 import path from "node:path";
 
-const database = new Database(path.join(process.cwd(), "forgeboard.db"));
+const database = new Database(process.env.DATABASE_PATH || path.join(process.cwd(), "forgeboard.db"));
 database.pragma("journal_mode = WAL");
 database.exec(`
   CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, repo TEXT, created_at TEXT NOT NULL);

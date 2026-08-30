@@ -1,19 +1,23 @@
-FROM node:20-bookworm-slim
+FROM node:22-bookworm
 
 WORKDIR /app
 
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ libsqlite3-dev \
+  && rm -rf /var/lib/apt/lists/*
+
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --include=dev
 
 COPY backend ./backend
 COPY src ./src
 COPY tsconfig.json ./tsconfig.json
 
 RUN mkdir -p /app/data
-WORKDIR /app/data
 
 ENV NODE_ENV=production
 ENV PORT=4000
+ENV DATABASE_PATH=/app/data/forgeboard.db
 
 EXPOSE 4000
 

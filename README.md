@@ -9,7 +9,7 @@ Forgeboard 是一个 Next.js 全栈工作台，用来记录产品需求迭代，
 
 ## 本地运行
 
-要求：Node.js 20 或更高版本，以及 npm。
+要求：Node.js 22 或更高版本，以及 npm。项目使用的 `better-sqlite3@13` 要求 Node.js 22+。
 
 ```bash
 npm install
@@ -78,6 +78,8 @@ make backend-up FRONTEND_ORIGIN=https://<你的用户名>.github.io
 - 设置容器异常自动重启
 - 将 SQLite 数据持久化到 Docker volume
 
+Docker 使用 Node.js 22，并将数据库写入 `/app/data/forgeboard.db`。`better-sqlite3@13` 要求 Node.js 22+，因此不要改回 Node.js 20。
+
 后台启动后检查：
 
 ```bash
@@ -106,7 +108,7 @@ docker volume create forgeboard-data
 docker run -d --name forgeboard-api --restart unless-stopped -p 4000:4000 -e PORT=4000 -e FRONTEND_ORIGIN=https://你的用户名.github.io -v forgeboard-data:/app/data forgeboard-api
 ```
 
-部署后台时使用 `npm run start:api` 启动生产 API。配置 `FRONTEND_ORIGIN` 为 Pages 地址，例如 `https://<你的用户名>.github.io`，不要在生产环境使用默认的 `*`。
+部署后台时使用 `npm run start:api` 启动生产 API。配置 `FRONTEND_ORIGIN` 为 Pages 地址，例如 `https://<你的用户名>.github.io`，不要在生产环境使用默认的 `*`。如果直接在宿主机安装依赖，必须安装 Node.js 22 和 Windows/Linux 的本地编译工具；使用 Docker 可避免宿主机 SDK 配置问题。
 
 后台部署完成后，将 GitHub Actions 变量 `NEXT_PUBLIC_API_BASE_URL` 设置为后台的公开 HTTPS 地址，例如 `https://api.example.com`。如果后台只在本机的 `localhost:4000`，GitHub Pages 无法访问它。
 
