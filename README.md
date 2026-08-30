@@ -126,6 +126,23 @@ GitHub Pages 只能托管静态文件，所以只发布前端。仓库已经包�
 
 如果 Pages 使用自定义域名，请把跨域白名单中的来源替换为自定义域名。GitHub Pages 的工作流会自动读取 `out/` 并发布，不需要手动上传文件。
 
+### 解决 `Domain is not a valid public domain` 错误
+
+如果你在 **Settings > Pages > Custom domain** 看到这个错误，请按下面规则填写：
+
+- 不使用自定义域名时，将 **Custom domain** 留空，不要填写 `localhost:3000`、后台 API 地址、`https://`、仓库路径或完整 Pages URL。
+- 使用自定义域名时，只填写真实域名，例如 `www.example.com` 或 `example.com`。
+- 不要填写 `www.example.com/path`、`example.com:3000`、IP 地址、`localhost` 或 `https://example.com`。
+- 自定义域名必须先在域名服务商处配置 DNS，然后再保存到 GitHub Pages。
+
+如果只是想使用 GitHub 提供的免费地址，请保持 Custom domain 为空，并访问：
+
+```text
+https://<你的用户名>.github.io/<仓库名>/
+```
+
+`NEXT_PUBLIC_API_BASE_URL` 是后台 API 配置，应该放在 **Settings > Secrets and variables > Actions > Variables**，不能填入 Custom domain。
+
 GitHub Pages 不能运行以下服务端内容：
 
 - `/api/workspace` 服务端 API
