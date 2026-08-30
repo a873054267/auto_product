@@ -61,6 +61,55 @@ Access-Control-Allow-Methods: GET, POST, OPTIONS
 
 不要把数据库连接密码、GitHub Token 或其他私密信息放入 `NEXT_PUBLIC_*` 变量，因为这些变量会被编译进浏览器 JavaScript。
 
+### 使用 Docker 一键启动后台
+
+项目已经提供 [Dockerfile](Dockerfile) 和 [Makefile](Makefile)。安装 Docker 后，在项目根目录执行：
+
+```bash
+make backend-up FRONTEND_ORIGIN=https://<你的用户名>.github.io
+```
+
+这个命令会自动完成：
+
+- 构建 `forgeboard-api` 镜像
+- 创建名为 `forgeboard-data` 的 Docker volume
+- 删除旧的同名容器并启动新容器
+- 将宿主机 `4000` 映射到后台容器 `4000`
+- 设置容器异常自动重启
+- 将 SQLite 数据持久化到 Docker volume
+
+后台启动后检查：
+
+```bash
+make backend-health
+```
+
+返回下面内容表示后台正常：
+
+```json
+{"status":"ok"}
+```
+
+常用命令：
+
+```bash
+make backend-logs       # 查看后台日志
+make backend-restart    # 重建并重启后台
+make backend-down       # 停止并删除容器，不删除数据库 volume
+```
+
+Windows 如果没有安装 `make`，可以直接运行等价命令：
+
+```powershell
+docker build -t forgeboard-api .
+docker volume create forgeboard-data
+docker run -d --name forgeboard-api --restart unless-stopped -p 4000:4000 -e PORT=4000 -e FRONTEND_ORIGIN=https://你的用户名.github.io -v forgeboard-data:/app/data forgeboard-api
+```
+
+部署后台时使用 `npm run start:api` 启动生产 API。配置 `FRONTEND_ORIGIN` 为 Pages 地址，例如 `https://<你的用户名>.github.io`，不要在生产环境使用默认的 `*`。
+
+后台部署完成后，将 GitHub Actions 变量 `NEXT_PUBLIC_API_BASE_URL` 设置为后台的公开 HTTPS 地址，例如 `https://api.example.com`。如果后台只在本机的 `localhost:4000`，GitHub Pages 无法访问它。
+
 ## 推送到个人 GitHub 仓库
 
 先在 GitHub 创建一个空仓库，例如 `forgeboard`，然后在项目根目录执行：

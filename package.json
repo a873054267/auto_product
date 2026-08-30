@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:api": "tsx backend/server.ts",
+    "start:api": "tsx backend/server.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
