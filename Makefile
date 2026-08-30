@@ -3,11 +3,12 @@ CONTAINER ?= forgeboard-api
 PORT ?= 4000
 FRONTEND_ORIGIN ?= http://localhost:3000
 VOLUME ?= forgeboard-data
+DEBIAN_MIRROR ?= mirrors.aliyun.com
 
 .PHONY: backend-build backend-up backend-down backend-logs backend-restart backend-health backend-shell
 
 backend-build:
-	docker build -t $(IMAGE) .
+	docker build --build-arg DEBIAN_MIRROR=$(DEBIAN_MIRROR) -t $(IMAGE) .
 
 backend-up: backend-build
 	docker volume inspect $(VOLUME) >NUL 2>&1 || docker volume create $(VOLUME)

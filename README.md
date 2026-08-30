@@ -69,6 +69,18 @@ Access-Control-Allow-Methods: GET, POST, OPTIONS
 make backend-up FRONTEND_ORIGIN=https://<你的用户名>.github.io
 ```
 
+Dockerfile 默认使用阿里云 Debian 镜像 `mirrors.aliyun.com` 和 npmmirror npm 镜像，适合国内服务器构建。如果当前网络到阿里云不稳定，可以在构建时切换 Debian 镜像：
+
+```bash
+docker build --build-arg DEBIAN_MIRROR=mirrors.tuna.tsinghua.edu.cn -t forgeboard-api .
+```
+
+Makefile 的 `backend-up` 会调用 Dockerfile 默认镜像配置；如需通过 Makefile 切换镜像，可以执行：
+
+```bash
+make backend-up DEBIAN_MIRROR=mirrors.tuna.tsinghua.edu.cn FRONTEND_ORIGIN=https://<你的用户名>.github.io
+```
+
 这个命令会自动完成：
 
 - 构建 `forgeboard-api` 镜像

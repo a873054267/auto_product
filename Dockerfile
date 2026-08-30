@@ -1,13 +1,22 @@
-FROM node:22-bookworm
+FROM node:22-bookworm-slim
 
 WORKDIR /app
 
-RUN apt-get update \
+ARG DEBIAN_MIRROR=mirrors.aliyun.com
+
+RUN sed -i \
+  -e "s@deb.debian.org/debian-security@${DEBIAN_MIRROR}/debian-security@g" \
+  -e "s@deb.debian.org/debian@${DEBIAN_MIRROR}/debian@g" \
+  -e "s@security.debian.org/debian-security@${DEBIAN_MIRROR}/debian-security@g" \
+  /etc/apt/sources.list.d/debian.sources \
+  && apt-get update \
   && apt-get install -y --no-install-recommends python3 make g++ libsqlite3-dev \
   && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm ci --include=dev
+RUN npm config set registry https://registry.npmmirror.com \
+  && npm ci --include=dev \
+  && npm cache clean --force
 
 COPY backend ./backend
 COPY src ./src
